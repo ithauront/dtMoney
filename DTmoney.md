@@ -18,3 +18,6 @@ dentro do componente colocamos isso :
     `}
 isso significa se a props.variant for igual a 'green' nos vamos adicionar um css (esse css tem que ser importado do styledComponentes) ai depois colocamos a templetes aspas e dentro delas estilizamos como quisermos. no background coloc não precisa colocar de novo o 'props => ' porque ja temos acesso as props por conta do props anterios. mas se quiser colocar vai fucnioanr tambem.
 agora vamos no nosso index.tsx e colocar essa prop no card que a gente quiser que utilize ela.
+
+# border-colapsing .
+usamos a border colapsing para poder usar o border-spacing ai ele vai colocar o espaçamento que definimos no spacing entre cada linha da nossa tabela e não um espacaçamento desse em cada lado.

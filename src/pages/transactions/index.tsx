@@ -1,6 +1,6 @@
 import { Header } from "../../components/header";
 import { Summary } from "../../components/summary";
-import { TransactionsContainer } from "./styles";
+import { PriceHighLight, TransactionsContainer, TransactionsTable } from "./styles";
 
 export function Transactions () {
     return(
@@ -8,24 +8,28 @@ export function Transactions () {
             <Header />
             <Summary />
             <TransactionsContainer>
-            <table>
-                <body>
+            <TransactionsTable>
+                <tbody>
                  
                     <tr>
                         <td width="50%">Desenvolvimento do site</td>
-                        <td>R$ 12.000,00</td>
+                        <td>
+                        <PriceHighLight variant="income">R$ 12.000,00</PriceHighLight>
+                        </td>
                         <td>Venda</td>
                         <td>13/04/2023</td>
                     </tr>
                     <tr>
                         <td width="50%">Pizza</td>
-                        <td>- R$ 59,00</td>
+                        <td>
+                        <PriceHighLight variant="outcome">- R$ 59,00</PriceHighLight>
+                        </td>
                         <td>Alimentação</td>
                         <td>10/04/2023</td>
                     </tr>
-                   
-                </body>
-            </table>
+                    </tbody>   
+               
+            </TransactionsTable>
             </TransactionsContainer>
         </div>
     )
