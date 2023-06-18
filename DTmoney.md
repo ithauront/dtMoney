@@ -1,3 +1,5 @@
+DESAFIO: quando terminar as aulas inlcuir os butoes de segunda e terceira pagina para a transactions quando tiver muita transação ou seja cada pagina  ai ter so um numero maximo de transações e a partir desse numero uma nova pagina vai ser criada e ao clicarno butão dela vai renderizar as outras.
+
 Nessa aqui eu so vou anotar coisas novas.
 
 a variant de um styledComponents.
