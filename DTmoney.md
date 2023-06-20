@@ -100,5 +100,92 @@ como para o button a gente vai ter que instalar esse componente.
 e no site do radix eme mostra tambem como aplicar o radio.
 quando clicamos no radio, o html coloca automaticamente um atributo chamado data-state='checked' a gente pode pegar isso para estilizar.
 
+### JSON SERVER
+como usamos so o react vamos usar o json server para simular um backend para nos.
+o json server é um projeto que vamos instalar e ele é bem completo então vai servir para a maioria das coisas que vamos usar de API e backend.
+vamos instalar ele com o npm i json-server -D
+e vamos criar um arquivo na raiz do projeto chamado server.json
+e nesse arquivo vamos abrir um objeto e cada propriedade que a gente passar para esse objeto vai ser uma entidade(ou rota ou podemos pensar como uma tabela do banco de dados) da nossa aplicação.
+agora que estamos com o json server instalado a gente pode colocar ele nesse arquivo dando no terinal o codigo
+npx json-server server.json //server json nesse caso sendo o nome do arquivo que a gente fez. se fosse outro nome a gente colocaria outro nome aqui.
+ele vai tentar usar a porta 3000 por padrão se ela ja estiver sendo usada vdc tem que repetir o codigo com um -p e ecolher a porta por exemplo3333
+apos isso o terminal vai rodar a alicação e se vc acessar a porta 3000 vc vai ter acesso ao banco de dados.
+por exemplo a localhost.3000/transactions vai nos retornar o array.
+se acessar so a 3000 não retorna nada.
+* colocar data no json. o json não suporta a data no padrão js como escrever um new Date() então temos que ir no navegador e escrever new new Date().toISOString()
+ai ele vai te dar a data no padrão que podemos usar no javascript assim.
+'2023-06-19T17:59:58.027Z'
+atualizamos o server.json e ele ficou assim:
+{
+    "transactions" :[
+        {
+            "id": 1,
+            "description": "desenvolvimento de site",
+            "type": "income",
+            "category": "venda",
+            "price": 14000,
+            "createdAt": "'2023-06-19T17:59:58.027Z'"
+        }
+    ] 
+}
+agora o json server não fica monitorando esse arquivo, se a gente quiser isso a gente tem que passar um -w no fim do codigo para rodar ele. ai ele vai ficar com watch e vai monitoar o negocio. se não podemos dar reload. cntrl + c para sair e depois abre de novo
+pelo visto precisa sair e abrir de novo com o -w no fim
+la no site do json server ele vai ensinar como utilizar varias coisas para ordenar essa api como por exemplo um filtro. 
+para usar um filtro vamos la no entedeço e depois colocamos um ? e por exemplo o type=o valor por exemplo
+http://localhost:3000/transactions?type=income
+todo isso esta escrito la na documentação do json server
+podemos tambem adicionar um delay para ficar mais realista de que como se a gente tivesse uma api em server. o dalay é legal para a gente lebrar de coisas como o loading, desabilitar um botão pra o usuario não clicar mil vezes.
+o comando fica
+npx json-server server.json -w -d 500
+nos vamos colocar ele no packagejson como um script de run. para isso copiamos sem o npx
+o packagejson ficaassim
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext .ts,.tsx",
+    "preview": "vite preview",
+    "dev:server":"json-server server.json -w -d 500"
+  },
+  e ai a gente pode rodar ele com o npm run dev:server
+  
+### pegar as infos da api
+para pegar as infos da api nos usamos o fetch. porem se a gente colocar ele solto ele vai ser chamado cada vez que ago na pagina mudar. para evistar sso vamos usar o useEffect assim ele so vai ser chamado quando a dependencia for alterada.e se a gente passar um array de dependencias vazio essa função qe esta dentro do useEffect so vai ser executada uma vez.
+a gente podia fazer o useEffect assim: 
+useEffect(()=> {
+fetch('  http://localhost:3000/transactions').then(response =>{console.log(response)})
+},[])
+so qe a resposta que a gente receberia no console.log seria somente dizendoq eu esta vindo uma string e não o conteudo que é o que a gente quer.
+para ter o que a gente quer a gente tem que transformar em texto dessa forma:
+useEffect(()=> {
+fetch('  http://localhost:3000/transactions').then(response =>{
+    response.text().then(data => {console.log(data)}) })
+},[])
+como o nosso objeto que queremos pegar é um json. se a gente trocar o .text por .json ele ja vai trazer isso em formato objeto javascript e vai ser ainda melhor para a gente trabalhar.
+o react no type script não permite transformar isso em uma função assincrona. porem podemos melhorar um pouco a sintaxe dessa função 
+useEffect(()=> {
+fetch('  http://localhost:3000/transactions')
+.then(response => response.json())
+    .then(data => {
+        console.log(data)
+    }) 
+},[])
+a geente passou o response.json direto apos a arrow do primeiro response.
+
+se a gente quiser usar o assinc await dentro d useEffect a gente tem que passar uma função fora do useEffect com o assinc await e no useEffect chamar ela.
+vamos fazer assim para poder ter tambem esse exemplo.
+    async function loadTransactions() {
+        const response = await fetch('  http://localhost:3000/transactions')
+        const data = await response.json()
+
+        console.log(data)
+    }
+useEffect(()=> {
+    loadTransactions
+},[])
+
+
+
+
+
     
     
