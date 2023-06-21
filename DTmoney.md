@@ -183,7 +183,27 @@ useEffect(()=> {
     loadTransactions
 },[])
 
+### reduce
+o reduce é utilizado quando queremos diminuir uma const a apenas alguns paramentros. nesse caso vamos diminuir a transactio a apenas os parametros income outcome e total.
+  const summary = transactions.reduce((acc, transaction)=>{
+if (transaction.type === 'income')
+ { acc.income += transaction.price
+acc.total += transaction.price
+}
+else {acc.outcome += transaction.price 
+    acc.total -= transaction.price
+}
+        
+        return acc;
+    }, {income: 0 , outcome: 0, total: 0} )
 
+o reduce pede que a gente de dois argumento geralmento o primeiro é chamado de acc ou acumulator. e o segundo é a const que estamos utilisando.
+ai a gente nas dependencias definie o income outcome e total como iniciando em 0 esses valores vão ser os valores income outcome e total do acc. podemos acessar eles usando acc.income etc.  apos isso vamos iniciar a nossa mainupalção desses dados.
+pevamos que se o transaction type que estiver chegando for de tipo income nos vamos pegar o acc.income (que no inicio é zero) e adicionar ele do valor desse income que esta vindo. alem disso vamos pegar o acc total e tambem adicionar do valor que esta vindo. vamos dizer que o price era 10 ai o acc.income vai ficar como 10 e o total tambem.
+depois disso a gente faz o else (que nesse caso a unica possibilidade possivel é o transaction.outcome) ai iremos pegar o acc outcome e adicionar do transaction.price. e vams pegar o total e reduzir do transaction price. ou seja se o outcome foi de 5 vai ficar acc.outcome = 5 e acc.total = 5 porque era 10 menos 5. e o acc.income continua igual em 10.
+depois disso retornamos nosso acc. 
+e assim atualizamos os valores income outcome e total utilizando cada entrada do transaction.
+se a gente for la no nosso server e adicionar um novo outcome ele vai mudar a soma.
 
 
 
