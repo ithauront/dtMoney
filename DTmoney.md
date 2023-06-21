@@ -205,6 +205,25 @@ depois disso retornamos nosso acc.
 e assim atualizamos os valores income outcome e total utilizando cada entrada do transaction.
 se a gente for la no nosso server e adicionar um novo outcome ele vai mudar a soma.
 
+# criando a formatação dos numeros data e preço
+criamos uma nova pasta hamada utils e nela a gente cria um formatter. nele a gente escreve esses codigos exportando as consts que vao usar o INTL nos formados de data para o brasil e tammber de number para currency para o brasil. fica assim:
+export const dateFormatter = new Intl.DateTimeFormat('pt-BR')
+
+export const priceFormatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BLR',
+})
+
+agora onde a gente for usar os price ou date a gente vau usar essa const e vai passar para ela o atributo que vamos usar.
+por exemplo assim:
+{transactions.type === 'outcome' && '- '}
+ {priceFormatter.format(transactions.price)}
+ a primeira linha é uma condicional para que se o type for outcome ele insira o simbolo de menos antes do price.
+
+ para a data ela vem como uma string então temos que transformar ela para uma data usando o new Date. fica assim:
+ td>{dateFormatter.format(new Date(transactions.createdAt))}</td>
+                       
+                       
 
 
     
