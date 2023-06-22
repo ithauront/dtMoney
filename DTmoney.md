@@ -223,7 +223,129 @@ por exemplo assim:
  para a data ela vem como uma string então temos que transformar ela para uma data usando o new Date. fica assim:
  td>{dateFormatter.format(new Date(transactions.createdAt))}</td>
                        
-                       
+## criar nossos proprios hooks
+as vezes usamos codigos muito complexos com diversos hooks. e isso pode deixar a legibilidade de nosso componente um pouco comprometida. para isso nos podemos criar nossos proprios hooks .
+vamos então criar uma pastano src chamada hooks
+e dentro dela um arquivo chamado useSummary.tsx
+esse arquivo vamos colocar nosso codigo de calculo das somas.
+vamos colocar ele la como uma função.
+e dentro dela a gente copia todo o nosso codigo que mexia com esse calculo. importamos o que temos que importar e embaixo damos um return(summary) o nosso useSummary.tsx fica assim:
+import { useContext } from "react"
+import { TransactionsContext } from "../contexts/transactionsContext"
+
+export function useSummary () {
+    const {transactions} = useContext(TransactionsContext)
+   
+    const summary = transactions.reduce((acc, transaction)=>{
+if (transaction.type === 'income')
+ { acc.income += transaction.price
+acc.total += transaction.price
+}
+else {acc.outcome += transaction.price 
+    acc.total -= transaction.price
+}
+        
+        return acc;
+    }, {income: 0 , outcome: 0, total: 0} )
+return (summary)
+}
+
+e depois disso a gente la na nossa pagina so precisa chamar 
+const summary = useSummary()
+
+#
+para trabalhar com os forms vamos instalar o react-hook-form e o zod
+o zod trabalha tambem com o schema ou seja sobre qaul vai ser a formatação do objeto que iremos receber pelo nosso form.
+
+nos vamos pegar a função register e a função handlesubmit do reacthookform. e vamos tambem importar tudo do zod como z.
+vamos colocar para nosso input usar a função register e colocar o que vem dele com o nome query.
+e vamos colocar o form para no onsubmit dele acionar a nossa função handlesubmit e handlesubmit form que criamos.
+o zod vai criar um objeto para  nosso schema e dentro desse objeto nos vamos dizer que o schema é uma string.
+o zod tambem tem um infer para inferir o tipo então na interface desse objeto podemos mandar simplismente o zod inferir o typeof esse objeto.
+por enquanto fica assim:
+import { MagnifyingGlass } from "phosphor-react";
+import { SearchFormContainer } from "./styles";
+import { useForm } from "react-hook-form";
+import * as z from 'zod';
+
+const searchFormSchema = z.object({
+    query: z.string(),
+})
+
+type SearchFromInput = z.infer<typeof searchFormSchema>
+export function SearchForm() {
+    const { register, handleSubmit } = useForm<SearchFromInput>()
+
+    function handleSearchTransactions() {
+
+    }
+
+    return (
+     
+        <SearchFormContainer onSubmit={handleSubmit(handleSearchTransactions)}>
+            <input 
+            type="text" 
+            placeholder="Busque por transações"
+             {...register('query')}/>
+            <button type="submit"><MagnifyingGlass size={20}/>Buscar</button>
+        </SearchFormContainer>
+    )
+}
+
+vamos precisar instalar mais uma biblioteca, o hookform resolver
+npm i @hookform/resolvers
+e a gente abre dentro do nosso useForm o resolver: zodResolver(searchFormSchema)
+nos podemos pegar essa propriedade do formState
+formState: { isSubmitting }
+e usar ela no button em disabled={isSubmiting} dessa forma se o form estiver em processo de sublissão o butão vai estar desabilitado. isso impede o usuario de clicar varias veazes no butão e mandar varios formularios.
+para que a gente simular uma demora na submissão do formulario como se fosse algo gande vamos colocar uma await nessa função:
+  async function handleSearchTransactions(data: SearchFromInput) {
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        console.log(data)
+    }
+    dessa forma o butão vai ficar disable por esses dois segundos.
+    com tudo o searchform fica assim:
+
+    import { MagnifyingGlass } from "phosphor-react";
+import { SearchFormContainer } from "./styles";
+import { useForm } from "react-hook-form";
+import * as z from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const searchFormSchema = z.object({
+    query: z.string(),
+})
+
+type SearchFromInput = z.infer<typeof searchFormSchema>
+
+export function SearchForm() {
+    const { register,
+         handleSubmit,
+        formState: { isSubmitting } } 
+    = useForm<SearchFromInput>({
+        resolver: zodResolver(searchFormSchema)
+    })
+
+    async function handleSearchTransactions(data: SearchFromInput) {
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        console.log(data)
+    }
+
+    return (
+     
+        <SearchFormContainer onSubmit={handleSubmit(handleSearchTransactions)}>
+            <input 
+            type="text" 
+            placeholder="Busque por transações"
+             {...register('query')}/>
+            <button type="submit" disabled={isSubmitting}
+            ><MagnifyingGlass size={20}/>Buscar</button>
+        </SearchFormContainer>
+    )
+}
+
+agora vamos aplicar as coisas no newModal.
+
 
 
     
