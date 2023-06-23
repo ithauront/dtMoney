@@ -460,6 +460,26 @@ a função ficou assim:
     }
 
 
+# reactDevTools
+no react dev tools a gente pode ir em setings e selecionar para ele dar highlight nos compponentes que renderizam quando da update. assim a gente pode ter um visual melhor s ele esta renderizando mais do que o necessario e tentar resolver isso.
+podemos tambem ir no profiler dos reactdevtools que vai retornar informaçoes sobre o fluxo de renderização
+a gene tem que clicar a esquerda para começar a gravar. fazer algiuma ação e parar a gravação ai ele vai te mostrartodo o fluxo. nos podemos ir em setings profiler e habilitar a opção de gravar porque cada componente renderizou.
+quando um componente pai renderiza novamente todos os filhos renderizam. o que não necesasriamente deixa a app lenta, mas quando acontece muitas vezes pode acabar deixando, então a gente pode ver modos de tentar evitar isso e aumentar a performace de nosso programa.
+temos que pensar que a performace tem que cuidar quando o problema chega, se a gente tentar evitar problemas de performace que ainda nao existem de forma sistematica é mluito provavel que a gente crie um codigo menos performatico.
+então quando a gente quiser cuidar da performace a gente vai la no profiler e vamos olhar tudo que esta sendo renderizado.
+contece que quando usamos o contexto sempre que puxamos algo do contexto ele renderiza todo o contexto de novo e todos os componentes que tem algo usando desse contexto.
+para acabar com isso nos podemos instalar uma biblioteca que vai pegar do contexto apenas aquilo que é necessario e renderizar apenas o que depende daquilo na app.
+vamos instalar ela usando o
+npm i use-context-selector scheduler
+(nesse caso o scheduler é uma segunda biblioteca dq qual a usecontextSelector depende. nos podemos instalar as duas de vez assim
+)
 
-    
+e para usar ela é bem simples, vamos no contexto e vamos trocar a importação do createContext que vem do react, para o createContext que vem dessa biblioteca e não vamos mais usar o useContext para chamar o contexto, e sim o useContextSelector e nele temos que passar um segundo parametro que é uma função que vai receber como parametro o contexto e vamos retornar dela quais informações a gente quer ficar olhando para ver se elas mudaram e não precisamos mais fazer a desestruturação do createTransaction porque ele é a unica coisa que esta retornando.
+um exemplo de como fica
+ const transactions = useContextSelector(TransactionsContext, (context) => {
+    return context.transactions
+  })
+  vamos agora arrumando isso em todas as chamadas.
+  porem apos tudo isso nos continuamos rennderizando tudo de novo porque ele diz que o hook 1 de cada pagina ludou que é estatamente o contextSelector.
+  ou seja estamos ainda renderizando toda a função do contexto. vamos corrigir isso na proxima aula.    
     
