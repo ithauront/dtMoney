@@ -346,6 +346,119 @@ export function SearchForm() {
 
 agora vamos aplicar as coisas no newModal.
 
+## vamos fazer um serch para as transaçoes
+mudamos o nome no context para fetchTransactios  demos o tipe dele para () => promisse
+e passamos ele no value para o context poder ser utilizado agora vamos para o searchform
+vamos instalar a axios para fazer as requisiçoes de uma forma mais amigaveis.
+vamos criar uma pasta chamada lib e dentro dela um arquivo chamado axios.ts
+e esse vai ser a configuração do axios.
+la a gente vai exportar uma const chamada api que é igual a axios.createe dentro dela a gente coloca um objetco com baseURL e nisso vamos setar o endereço da api que é o loalhost
+com isso todas as requisiçes atravez do axios vão vir por essa baseurl ai a gente so precisa digitar o trestante como o /transactios e não precisamos mais digitar o endereço principal.
+import axios from "axios";
+
+export const api = axios.create({
+    baseURL: "http://localhost:3000",
+    
+})
+o axios.ts fica assim como esta acima/
+vamos agora de volta para o contexto.
+la nossa requisição estava assim:
+   async function fetchTransactions(query?: string) {
+        const url = new URL('/transactions')
+        if (query) {
+            url.searchParams.append('q', query)
+        }
+        const response = await fetch(url)
+        const data = await response.json();
+
+        setTransactions(data);
+    }
+useEffect(()=> {
+    fetchTransactions()
+},[])
+vamos mudar para isso:
+
+    async function fetchTransactions(query?: string) {
+      const response = await api.get('transactions', {
+        params: {
+            q: query,
+        }
+      })
+
+        setTransactions(response.data);
+    }
+useEffect(()=> {
+    fetchTransactions()
+},[])
+
+agora a gente usa o api para pegar o endereço principal e podemos nele usar os metodos do axios como get, post etx.
+# cadastrar novas transações.
+vamos no newModal e na função handleCreateNewTransaction vamos coocar 
+  await api.post('transactions', {
+    description: data.description
+    e os outros campos. 
+})
+o post funciona para quando queremos postar algo. e o json server da a possibilidade de colocarmos uma requisição de post. então ele vai criar automaticamente um novo objeto/
+nos podemos fazer assim campo por campo e dessa forma fica mais claro. mas tambem
+ podemos no lugar de todos os campos colocar simplismente {...data}
+outra forma é desestruturamos os campos de dentro do data, e enviarmos os campos. assim vamos ter um visual do que esta sendo enviado
+ async function handleCreateNewTransaction (data: NewTransactionFromInputs) {
+    const { description, category, price, type } = data  
+    await api.post('transactions', {
+    description,
+    type,
+    category,
+    type,
+    createdAt; new Date()
+})
+    }
+
+não precisamos colocar o id porque o json server cria sowinho.
+para a createdAt a gente poderia fazer de uma forma mais complicada, mas o que vamos fazer é apenas passar de novo a propriedade com o mesmo nome e mandar o javascript criar uma data. geralmente trabalhando com backend real não vamos precisar fazer isso. isso vai ser gerado automaticamente pelo backend.
+para ordenar nossa lista vamos la no contexto e no parametro colocamos essas propriedades:
+async function fetchTransactions(query?: string) {
+      const response = await api.get('transactions', {
+        params: {
+            _sort: 'createdAt',
+            _order: 'desc',
+            q: query,
+        }
+      })
+
+      escolhemos para ordenar pelo createdAt no decrescente.
+importamos tambem o resert do useForm e colocamos ele na função de validação do newModal assim sempre que cadastrar ele vai fechar a janela.
+
+agora temos que atualizar a lista sempre que um novo for cadastrado.
+podemos ir ma no newmodal e na fun_ção de cadastro e no fim do cadastro executar novamente o metodo fetchtransactios. so que talvez iso não seja o melhor porque ja estamos fazendo uma requisição para cadastrar e ai teriamos que fazer mais uma para rewuisicionar, poderia sbrecarregar a api. 
+o metodo api.post ja te retorna o que foi cadastrado então podemos transformar o await api.post em uma const chamada response e assim pegar a response.data. e jogar la no objeto de transactions. uma das formas de fazer isso é fazer uma função no contexto para atualizar o objeto de transactios
+algo como function updatedTransactions() {
+    const transactios = ...transactions
+    const updatedTransactions = setTransactions(response.data)
+}
+não sei se fiz certo mas essa é a ideia.
+o perigo de fazer assim é que a gente expoe para nossos componentes uma função que pode mudar nossos transactios como ela quiser o que é ruim cada componente vai ter usua logica de compo mudar o transactions dentro dele e acaba ficando aberto a erros.
+então nos vamos fazer uma fiunção assync no contexto para criar a transaction la dentro. e essa função que vai fazer a requisiçao do axios
+então vamos la no newModal e vamos recortar a const response await api.post. nos fazemos uma nova interface para as props que a funçao vai receber no context apenas para ela ficar independente do modal. para que se um dia a gente usar outros componentes ou ate apagar o modal o nosso contexto ontinuar funciaonando.
+interface CreateTransactioninput {
+    description: string,
+    type: 'income' | 'outcome',
+    category: string,
+    price: number,
+}
+ai desestrutiramos nosso data para ser os tipos que queremos. e depois damos um setTransactions copiamos as transaçoes anteriores por um calback e tepois passamos o response.data/ so colocamos o response data antes do ...state por conta da ordenação, da mais recente para a mais antiga.
+a função ficou assim:
+    async function createTransaction(data: CreateTransactioninput ) {
+        const { description, category, price, type } = data  
+        const response = await api.post('transactions', {
+            description,
+            type,
+            category,
+            price,
+            createdAt: new Date(),
+        })
+        setTransactions(state =>[response.data, ...state ])
+    }
+
 
 
     
