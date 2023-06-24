@@ -513,5 +513,33 @@ vamos colocar toda essa função async dentro de um useCalback. e dar como segun
   )
   vamos fazer igual no fecthTransactions porque ele é usado no useForm porque ele tambem precisa estar envolta de um callback. 
   dessa forma agra com os dois dentro de callBacks os componentes estão sendo renderizados por outros motivos, não porque eles mudaram, e sim porque o componente pai mudou.
-  nem sempre vai ser necessario alterar isso. mas caso seja nos vamos ver na proxima aula como alterar.   
-    
+  nem sempre vai ser necessario alterar isso. mas caso seja nos vamos ver na proxima aula como alterar.
+
+  ## fluxo de renderização de componente no react
+  porque o componente renderiza:
+  1) hook changed - mudou stado, reducer, contexto
+  2) props changed - mudou uma popriedade
+  3) parents changed - componente pai foi alterado.
+  esse são os tres motivos que ativam a renderização de um componente
+  qual o fluxo de renderizaçõ?
+  não  necessariamente o componente ser reescrito e reprocessado em tela. ele tem tres passos
+  1 react recria o htmlda interface desse componente - no caso do searchform quando o componente pai dele mudou a primeira coisa que o react faz é recriar o html do searchform
+  2) apois isso ele compara a verão do html recriada com a versão anterios. 
+  3 se mudou algo ele reescreve o html na tela.
+  esses tres passos são superrapidos, então nem sempre vale a pena a gente evitar renderização no react.
+  porem se um componente tem um html enorme, percorrendo uma lista de 200 itens por exemplo, essa comparação iria ficar lenta. porque le compararia um por um.
+  ou seja quanto maior o componente no quesito do que ele retonrna mais o fluxo de renderização pode ser lento.
+  ai nesses vasos a gente pode usar uma solução que vem de dentro do react, que se chama memo
+  o memo é uma função que usamos em componentes do react para conseguir memorizar um componente.
+  # memo
+o memo vai adicionar um passo a mais antes desse fluxo que é o passo 0
+0) hooks changed, props changed (deep comparison)
+0.1 ) olhar profundamente para os hooks e props e comparar com a versão anterior dos hooks e props
+0.2) se mudou algo ele vai permitir a nova renderização e ai cai para o fluxo que a gente ja conhece de renderiéação. mas se não mudou nada ele não vai recriar o html.
+nos so vamos usar isso em componentes que tem html pesado. mas vamos usar nesse projeto so para aprender.
+# usando o memo
+para usar o memo vamos alterar um pouco as funções
+vamos no arquivo do searchForm parar de exportar a função onde ela é escrita vamos mudar o nome da função para SearchFormContext. e no fim do arquivo vamos dar um export const SearchForm (que é o nome original) = memo(searchFormComponent)
+ou seja as chamadas dessa função em todos os componentes continua a mesma, mas agora ela é iguam ao memo chamando a funçao .
+agora o searchform não vai mais ser renderizado.
+não vale a pena jogar o memo em todos os componentes porque essa comparação pode ser mais lenta do que recriar o html. então so vale a pena fazer isso caso o html ser muito pesado.
