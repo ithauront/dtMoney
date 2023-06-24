@@ -481,5 +481,37 @@ um exemplo de como fica
   })
   vamos agora arrumando isso em todas as chamadas.
   porem apos tudo isso nos continuamos rennderizando tudo de novo porque ele diz que o hook 1 de cada pagina ludou que é estatamente o contextSelector.
-  ou seja estamos ainda renderizando toda a função do contexto. vamos corrigir isso na proxima aula.    
+  ou seja estamos ainda renderizando toda a função do contexto. vamos corrigir isso na proxima aula.
+  NO REACT toda função que criamos no corpo de um componene é recriada do zero sempre que o componente renderizar. acredito que por causa da imutabilidade.
+  isso pode causar um problema de igualdade referencial que é o que estamos tendo agora.
+  a nossa função createTransaction esta sendo observada por outro componente que éo newTransactionModal e queremos que ele não renderize porque a função createTransaction não mudou entre uma renderização e outra. nesse caso podemos usar uma função que vem do react. um hool chamado useCallback. ele evita que uma fu,ção seja recriada em memora se nenhuma função que ele dependa tenha mudada. vamos mudar a createTransaction de async para uma const. ela era assim:
+    async function createTransaction(data: CreateTransactioninput) {
+    const { description, category, price, type } = data
+    const response = await api.post('transactions', {
+      description,
+      type,
+      category,
+      price,
+      createdAt: new Date(),
+    })
+    setTransactions((state) => [response.data, ...state])
+  }
+vamos colocar toda essa função async dentro de um useCalback. e dar como segundo parametro nosso array de dependencias. o array de dependencias funciona igual o useEffect o que passarmos para ele vai ser o que vai fazer a função ser recriada em memoria. se ele for vazio ela nunca vai ser recriada em memoria. se essa função precisar de algo que venha de fora dela eu preciso comlocar essa informação de fora no array de dependencias, se não ela vai chegar com o valor desatualizado. a função fica assim sem atualizar o array de dependencia: 
+ const createTransaction = useCallback(
+    async (data: CreateTransactioninput) => {
+      const { description, category, price, type } = data
+      const response = await api.post('transactions', {
+        description,
+        type,
+        category,
+        price,
+        createdAt: new Date(),
+      })
+      setTransactions((state) => [response.data, ...state])
+    },
+    [],
+  )
+  vamos fazer igual no fecthTransactions porque ele é usado no useForm porque ele tambem precisa estar envolta de um callback. 
+  dessa forma agra com os dois dentro de callBacks os componentes estão sendo renderizados por outros motivos, não porque eles mudaram, e sim porque o componente pai mudou.
+  nem sempre vai ser necessario alterar isso. mas caso seja nos vamos ver na proxima aula como alterar.   
     
