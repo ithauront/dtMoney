@@ -543,3 +543,12 @@ vamos no arquivo do searchForm parar de exportar a função onde ela é escrita 
 ou seja as chamadas dessa função em todos os componentes continua a mesma, mas agora ela é iguam ao memo chamando a funçao .
 agora o searchform não vai mais ser renderizado.
 não vale a pena jogar o memo em todos os componentes porque essa comparação pode ser mais lenta do que recriar o html. então so vale a pena fazer isso caso o html ser muito pesado.
+
+nessa aplicação entendemos que podemos usar o callback para evitar renderisaçõs na apliação.
+podemos comlocar a fetchtransactions como dependencia do useEffects porque como a dependencia do fetchTransaction esta vazia ela não vai ser recriadaem loop infinito.
+
+# o mesmo problema de recriar componente pode existir com variaveis
+entãocomo evitar a recriação de variaveis em memoria.
+vamos tambem levar em conta que a comparaçéao das variaveis assim como as do componente podem deixar a aplicação mais lenta. talvez valha a pena deixar elas serem crecriadas em memoria.
+porem essa variavel pode ser repassada para varios componentes e acabar caido em problema de igualdade referencias, que por mais que la não enha seu valor mudado ela ocupa um novo espaço a memoria que talvez não fosse necessario porque o valor dela não mudou. não é necessario realmente em nossa aplicação  então para mostrar como isso funciona vamos la no hook useSummary, onde tem um calculo e vamos usar essa função.
+vamos importar de dentro do react o useMemo que é exatamente igual o memo porem usado para variaveis e não para componentes. vamos copiar o codigo do calculo, escrevemos o useMemo() e dentro dele temos uma arrow funciont como prieiro parametro e segundo o array de dependeias. no retrono da função vamos colocar o nosso calculo e no array de dependenca quais são as variaveis extenras utilizadas.
