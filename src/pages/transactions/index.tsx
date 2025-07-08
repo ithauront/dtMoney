@@ -22,6 +22,22 @@ export function Transactions() {
         <SearchForm />
         <TransactionsTable>
           <tbody>
+            {transactions.length === 0 && (
+              <div
+                style={{
+                  backgroundColor: '#F75A68',
+                  color: '#000',
+                  padding: '1rem',
+                  borderRadius: '4px',
+                  marginBottom: '1rem',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                }}
+              >
+                Carregando transações... O servidor pode estar despertando. Isso
+                pode levar alguns segundos.
+              </div>
+            )}
             {transactions.map((transactions) => {
               return (
                 <tr key={transactions.id}>
