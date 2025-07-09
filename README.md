@@ -124,6 +124,17 @@ export const api = axios.create({
 })
 ```
 
+---
+
+🤝 Related Backend
+
+Although this project uses a mock API (via json-server), I have developed other projects where frontend and backend are fully integrated.
+
+In this case, the focus was on mastering React architecture, form handling, and performance patterns — not full-stack integration.
+
+If you're curious about a backend project with a similar structure and logic, check out the apiRest repository, which simulates a real financial tracker backend with database persistence, RESTful routes, and session handling.
+
+
 
 
 
