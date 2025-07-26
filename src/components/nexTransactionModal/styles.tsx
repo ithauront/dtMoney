@@ -8,6 +8,11 @@ export const Overlay = styled(Dialog.Overlay)`
   height: 100vh;
   inset: 0; //inset é a mesma coisa que escrever top 0; bottom 0; left 0 rigth 0;
   background: rgba(0, 0, 0, 0.75); //uma transparencia preta
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export const Content = styled(Dialog.Content)`
@@ -61,6 +66,10 @@ export const Content = styled(Dialog.Content)`
         transition: background-color 0.2s;
       }
     }
+  }
+
+  @media (max-width: 768px) {
+    background-color: red;
   }
 `
 export const TransactionType = styled(RadioGroup.Root)`

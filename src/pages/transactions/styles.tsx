@@ -14,6 +14,7 @@ export const TransactionsTable = styled.table`
   margin-top: 1.5rem;
 
   td {
+    width: 50%;
     padding: 1.25rem 2rem;
     background: ${(props) => props.theme['gray-700']};
 
@@ -36,4 +37,18 @@ export const PriceHighLight = styled.span<PriceHighLightProps>`
     props.variant === 'income'
       ? props.theme['green-300']
       : props.theme['red-300']};
+`
+
+export const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+
+  @media (max-width: 768px) {
+    table {
+      min-width: 600px;
+    }
+  }
 `

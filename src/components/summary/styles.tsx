@@ -11,6 +11,9 @@ export const SummaryContainer = styled.section`
   gap: 2rem;
 
   margin-top: -5rem;
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
 `
 
 interface SummaryCardProps {
@@ -38,4 +41,14 @@ export const SummaryCard = styled.div<SummaryCardProps>`
     css`
       background-color: ${props.theme['green-500']};
     `}
+  @media (max-width: 768px) {
+    width: 100px;
+    padding: 0.5rem;
+    header {
+      font-size: 12px;
+    }
+    strong {
+      font-size: 10px;
+    }
+  }
 `

@@ -41,4 +41,10 @@ export const SearchFormContainer = styled.form`
       cursor: not-allowed;
     }
   }
+  @media (max-width: 768px) {
+    button {
+      width: 140px;
+      padding: 0.5rem;
+    }
+  }
 `
